@@ -66,47 +66,40 @@
       }
 
       let HA = wae_GenA()
+      let HB = wae_GenB(HA)
+      let BKEY = wae_AcceptA_GenKeyForB(HA, HB)
+      let AKEY = wae_AcceptB_GenKeyForA(HB, HA)
+
       console.log("============= HANDSHAKE A ===========")
       console.dir(HA)
-
-      let HB = wae_GenB(HA)
       console.log("============= HANDSHAKE B ===========")
       console.dir(HB)
-
       console.log("-")
       console.log("-")
-
       console.log("--------- Generate KEY B from handshake A ------------------")
-      let BKEY = wae_AcceptA_GenKeyForB(HA, HB)
       console.dir(BKEY)
-
       console.log("--------- Generate KEY A from handshake B ------------------")
-      let AKEY = wae_AcceptB_GenKeyForA(HB, HA)
       console.dir(AKEY)
 
       let unencryptedText = "This text will be encrypted!"
 
       let message = new TextEncoder().encode(unencryptedText);
-
       let encryptedText = wae_Encrypt(AKEY, message)
+      let decryptedText = wae_Decrypt(BKEY, encryptedText)
+      let finalDecryptedMessage = new TextDecoder().decode(decryptedText)
 
       console.log("-")
       console.log("-")
       console.log("________ ENCRYPTED Uint8Array ________")
       console.dir(encryptedText)
-
-      let decryptedText = wae_Decrypt(BKEY, encryptedText)
       console.log("________ DECRYPTED Uint8Array ________")
       console.dir(decryptedText)
-
-      let finalDecryptedMessage = new TextDecoder().decode(decryptedText)
-
       console.log("________ DECRYPTED MESSAGE ________")
       console.log(finalDecryptedMessage)
-
       console.log("-")
       console.log("-")
       console.log("!!!!!!! PANIC TEST !!!!!!!")
+
       let x = wae_PanicTest()
       error = CheckWASForError(x, true)
       if (error) {
